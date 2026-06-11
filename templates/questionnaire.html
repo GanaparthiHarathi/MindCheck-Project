@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHQ-9 Depression Questionnaire - MindCheck</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">       
+    <style>    
+    .progress-container {
+            position: sticky;
+            top: 76px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .question-counter {
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .question-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .question-step {
+            display: none;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .question-step.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .hero-section {
+            text-align: center;
+            color: white;
+        }
+
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .scale-explanation {
+            background: linear-gradient(135deg, #e8f4fd, #dbeafe);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        
+        .radio-option {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+        
+        .radio-option label {
+            display: block;
+            padding: 1rem;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            background: white;
+        }
+        
+        .radio-option label:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+        }
+        
+        .radio-option input[type="radio"]:checked + label {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .radio-group {
+                flex-direction: column;
+            }
+            
+            .radio-option {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">MindCheck</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Assessment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/resources">Resources</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="container">
+            <div class="question-counter">
+                Question <span id="current-question">1</span> of <span id="total-questions">9</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 11%" id="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section" style="margin-top: 140px; padding: 2rem 0;">
+        <div class="container">
+            <h1>PHQ-9 Depression Assessment</h1>
+            <p>A standardized tool for screening depression symptoms</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Disclaimer -->
+                <div class="disclaimer">
+                    <h6 class="fw-bold mb-2">⚠️ Important Disclaimer</h6>
+                    <p class="mb-0 small">
+                        This is a screening tool, not a diagnostic instrument. The questions relate to how you have felt 
+                        during the <strong>past two weeks</strong>. If you're experiencing thoughts of self-harm or suicide, 
+                        please seek immediate professional help or call a crisis hotline.
+                    </p>
+                </div>
+
+                <!-- Scale Explanation -->
+                <div class="scale-explanation">
+                    <h5 class="mb-3">📋 How to Answer</h5>
+                    <p class="mb-2">For each question, select the option that best describes how often you've experienced each problem over the <strong>last 2 weeks</strong>:</p>
+                    <div class="row text-center">
+                        <div class="col-6 col-md-3 mb-2">
+                            <strong>Not at all</strong><br>
+                            <small class="text-muted">0 days</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-2">
+                            <strong>Several days</strong><br>
+                            <small class="text-muted">1-6 days</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-2">
+                            <strong>More than half</strong><br>
+                            <small class="text-muted">7-11 days</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-2">
+                            <strong>Nearly every day</strong><br>
+                            <small class="text-muted">12-14 days</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questionnaire Form -->
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST" action="/submit_screening" id="questionnaireForm">
+                            
+                            {% for i in range(questions|length) %}
+                            <div class="question-step {% if i == 0 %}active{% endif %}" id="question-{{ i }}">
+                                <div class="mb-4">
+                                    <h4 class="question-title mb-3">
+                                        {{ i + 1 }}. Over the last 2 weeks, how often have you been bothered by...
+                                    </h4>
+                                    <h5 class="question-text text-primary">
+                                        {{ questions[i] }}?
+                                    </h5>
+                                </div>
+
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                    <input type="radio" name="q_{{ i }}" value="0" id="q{{ i }}_0" required>
+                                    <label for="q{{ i }}_0">
+                                        <strong>Not at all</strong><br>
+                                        <small>0 days</small>
+                                    </label>
+                                </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="q_{{ i }}" value="1" id="q{{ i }}_1" required>
+                                        <label for="q{{ i }}_1">
+                                            <strong>Several days</strong><br>
+                                            <small>1-6 days</small>
+                                        </label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="q_{{ i }}" value="2" id="q{{ i }}_2" required>
+                                        <label for="q{{ i }}_2">
+                                            <strong>More than half</strong><br>
+                                            <small>7-11 days</small>
+                                        </label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" name="q_{{ i }}" value="3" id="q{{ i }}_3" required>
+                                        <label for="q{{ i }}_3">
+                                            <strong>Nearly every day</strong><br>
+                                            <small>12-14 days</small>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="question-navigation">
+                                    {% if i > 0 %}
+                                    <button type="button" class="btn btn-primary" onclick="previousQuestion({{ i }})" id="next-btn-{{ i }}">                                        ← Previous Question
+                                    </button>
+                                    {% else %}
+                                    <div></div>
+                                    {% endif %}
+
+                                    {% if i < questions|length - 1 %}
+                                    <button type="button" class="btn btn-primary" onclick="nextQuestion({{ i }})" id="next-btn-{{ i }}">                                        Next Question →
+                                    </button>
+                                    {% else %}
+                                    <button type="submit" class="btn btn-success btn-lg" id="submit-btn" >
+                                        Get My Results
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Crisis Resources -->
+                <div class="card mt-4 border-danger">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-danger">🆘 Need Immediate Help?</h5>
+                        <div class="row mt-3">
+                            <div class="col-md-4 mb-3">
+                                <strong>National Suicide Prevention Lifeline</strong><br>
+                                <a href="tel:988" class="btn btn-danger btn-sm">Call 988</a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <strong>Crisis Text Line</strong><br>
+                                <span class="small">Text HOME to 741741</span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <strong>Emergency Services</strong><br>
+                                <a href="tel:911" class="btn btn-danger btn-sm">Call 911</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentQuestion = 0;
+        const totalQuestions = 9;
+        // Update progress and question counter
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('current-question').textContent = currentQuestion + 1;
+        }
+        
+        // Show specific question
+        function showQuestion(questionIndex) {
+            // Hide all questions
+            document.querySelectorAll('.question-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Show current question
+            document.getElementById(`question-${questionIndex}`).classList.add('active');
+            currentQuestion = questionIndex;
+            updateProgress();
+            
+        }
+        
+        // Next question
+        function nextQuestion(currentIndex) {
+            if (currentIndex < totalQuestions - 1) {
+                showQuestion(currentIndex + 1);
+            }
+        }
+        
+        // Previous question
+        function previousQuestion(currentIndex) {
+            if (currentIndex > 0) {
+                showQuestion(currentIndex - 1);
+            }
+        }
+        
+        // Check if question is answered and enable next button
+        function checkAnswered(questionIndex) {
+            const radios = document.querySelectorAll(`input[name="q_${questionIndex}"]`);
+            const nextBtn = document.getElementById(`next-btn-${questionIndex}`);
+            const submitBtn = document.getElementById('submit-btn');
+            
+            let answered = false;
+            radios.forEach(radio => {
+                if (radio.checked) answered = true;
+            });
+            
+            if (nextBtn) {
+                nextBtn.disabled = !answered;
+            }
+            if (submitBtn && questionIndex === totalQuestions - 1) {
+                submitBtn.disabled = !answered;
+            }
+        }
+        
+        // Add event listeners to all radio buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            for (let i = 0; i < totalQuestions; i++) {
+                const radios = document.querySelectorAll(`input[name="q_${i}"]`);
+                radios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        checkAnswered(i);
+                        
+                    
+                    });
+                });
+            }
+            
+            // Form validation
+            document.getElementById('questionnaireForm').addEventListener('submit', function(e) {
+                let allAnswered = true;
+                
+                for(let i = 0; i < totalQuestions; i++) {
+                    const radioButtons = document.querySelectorAll(`input[name="q_${i}"]`);
+                    let questionAnswered = false;
+                    
+                    for(let radio of radioButtons) {
+                        if(radio.checked) {
+                            questionAnswered = true;
+                            break;
+                        }
+                    }
+                    
+                    if(!questionAnswered) {
+                        allAnswered = false;
+                        // Go to first unanswered question
+                        showQuestion(i);
+                        break;
+                    }
+                }
+                
+                if(!allAnswered) {
+                    e.preventDefault();
+                    alert('Please answer all questions to get an accurate assessment.');
+                }
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft' && currentQuestion > 0) {
+                    previousQuestion(currentQuestion);
+                } else if (e.key === 'ArrowRight' && currentQuestion < totalQuestions - 1) {
+                    const nextBtn = document.getElementById(`next-btn-${currentQuestion}`);
+                    if (nextBtn && !nextBtn.disabled) {
+                        nextQuestion(currentQuestion);
+                    }
+                }
+            });
+            
+            // Initialize first question check
+            checkAnswered(0);
+        });
+        
+        // Add smooth transitions and animations
+        document.querySelectorAll('.radio-option label').forEach(label => {
+            label.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px) scale(1.02)';
+            });
+            
+            label.addEventListener('mouseleave', function() {
+                if (!this.previousElementSibling.checked) {
+                    this.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

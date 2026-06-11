@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Results - MindCheck</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: none;
+            border-radius: 15px;
+        }
+        .navbar {
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+        }
+        .minimal { background: linear-gradient(45deg, #4CAF50, #8BC34A); }
+        .mild { background: linear-gradient(45deg, #FFC107, #FF9800); }
+        .moderate { background: linear-gradient(45deg, #FF9800, #FF5722); }
+        .moderately-severe { background: linear-gradient(45deg, #FF5722, #F44336); }
+        .severe { background: linear-gradient(45deg, #F44336, #E91E63); }
+        .hero-section {
+            padding: 2rem 0;
+            text-align: center;
+            color: white;
+        }
+        .recommendation {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">MindCheck</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Assessment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/resources">Resources</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <h1>Your Assessment Results</h1>
+            <p>Based on your PHQ-9 responses</p>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body p-5 text-center">
+                        <!-- Score Display -->
+                        <div class="score-circle 
+                            {% if score <= 4 %}minimal
+                            {% elif score <= 9 %}mild
+                            {% elif score <= 14 %}moderate
+                            {% elif score <= 19 %}moderately-severe
+                            {% else %}severe
+                            {% endif %}">
+                            {{ score }}/27
+                        </div>
+
+                        <h2 class="mb-3">{{ severity }}</h2>
+                        <p class="lead mb-4">{{ recommendation }}</p>
+
+                        <!-- Recommendations -->
+                        <div class="recommendation text-start">
+                            <h5 class="mb-3">📋 Recommendations:</h5>
+                            {% if score <= 4 %}
+                                <ul class="mb-0">
+                                    <li>Continue maintaining healthy lifestyle habits</li>
+                                    <li>Keep monitoring your mental health</li>
+                                    <li>Practice stress management techniques</li>
+                                </ul>
+                            {% elif score <= 9 %}
+                                <ul class="mb-0">
+                                    <li>Consider talking to a counselor or therapist</li>
+                                    <li>Focus on self-care activities</li>
+                                    <li>Maintain social connections</li>
+                                    <li>Regular exercise and healthy sleep schedule</li>
+                                </ul>
+                            {% elif score <= 14 %}
+                                <ul class="mb-0">
+                                    <li>Strongly consider professional counseling</li>
+                                    <li>Talk to your primary care physician</li>
+                                    <li>Consider therapy or counseling options</li>
+                                    <li>Reach out to trusted friends or family</li>
+                                </ul>
+                            {% else %}
+                                <ul class="mb-0">
+                                    <li><strong>Please seek professional help promptly</strong></li>
+                                    <li>Contact your doctor or a mental health professional</li>
+                                    <li>Consider calling a crisis helpline if needed</li>
+                                    <li>Don't hesitate to reach out for support</li>
+                                </ul>
+                            {% endif %}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-4">
+                            <a href="/" class="btn btn-primary me-3">Take Assessment Again</a>
+                            <a href="/resources" class="btn btn-outline-primary me-3">View Resources</a>
+                            <a href="/contact" class="btn btn-outline-secondary">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crisis Resources (show for moderate+ scores) -->
+                {% if score > 9 %}
+                <div class="card mt-4 border-danger">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-danger">🆘 Immediate Help Available</h5>
+                        <div class="row mt-3">
+                            <div class="col-md-4 mb-3">
+                                <strong>National Suicide Prevention Lifeline</strong><br>
+                                <a href="tel:988" class="btn btn-danger btn-sm">Call 988</a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <strong>Crisis Text Line</strong><br>
+                                <span class="small">Text HOME to 741741</span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <strong>Emergency Services</strong><br>
+                                <a href="tel:911" class="btn btn-danger btn-sm">Call 911</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Disclaimer -->
+                <div class="card mt-4 bg-light">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-2">⚠️ Important Disclaimer</h6>
+                        <small class="text-muted">
+                            This assessment is for informational purposes only and is not a substitute for professional medical advice, diagnosis, or treatment. 
+                            Always seek the advice of your physician or other qualified health provider with any questions you may have regarding your mental health. 
+                            The PHQ-9 is a screening tool and should not be used as a sole basis for diagnosis.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

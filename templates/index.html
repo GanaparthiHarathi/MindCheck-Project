@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depression Assessment Tool</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: none;
+            border-radius: 15px;
+        }
+        .question-card {
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+        }
+        .navbar {
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+        .hero-section {
+            padding: 4rem 0;
+            text-align: center;
+            color: white;
+        }
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .hero-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">MindCheck</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Assessment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/resources">Resources</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section" style="margin-top: 76px;">
+        <div class="container">
+            <h1>Depression Assessment Tool</h1>
+            <p>A confidential screening tool to help assess depression symptoms</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <div class="card">
+                    <div class="card-body p-4">
+                        <!-- Disclaimer -->
+                        <div class="disclaimer">
+                            <h6 class="fw-bold mb-2">⚠️ Important Disclaimer</h6>
+                            <small>This is a screening tool, not a diagnostic instrument. If you're experiencing thoughts of self-harm or suicide, please seek immediate professional help or call a crisis hotline.</small>
+                        </div>
+
+                        <h3 class="card-title mb-4 text-center">PHQ-9 Depression Assessment</h3>
+                        <p class="text-muted mb-4 text-center">
+                            Over the last 2 weeks, how often have you been bothered by any of the following problems?
+                        </p>
+
+                        <form method="POST" action="/assess" id="assessmentForm">
+                            {% for i in range(questions|length) %}
+                            <div class="question-card">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ i + 1 }}. {{ questions[i] }}</h6>
+                                        <div class="row">
+                                            <div class="col-6 col-md-3 mb-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="question_{{ i }}" value="0" id="q{{ i }}_0" required>
+                                                    <label class="form-check-label small" for="q{{ i }}_0">
+                                                        Not at all
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3 mb-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="question_{{ i }}" value="1" id="q{{ i }}_1" required>
+                                                    <label class="form-check-label small" for="q{{ i }}_1">
+                                                        Several days
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3 mb-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="question_{{ i }}" value="2" id="q{{ i }}_2" required>
+                                                    <label class="form-check-label small" for="q{{ i }}_2">
+                                                        More than half the days
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-md-3 mb-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="question_{{ i }}" value="3" id="q{{ i }}_3" required>
+                                                    <label class="form-check-label small" for="q{{ i }}_3">
+                                                        Nearly every day
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    Get Assessment Results
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Crisis Resources -->
+                <div class="card mt-4 border-danger">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-danger">Need Immediate Help?</h5>
+                        <p class="card-text">
+                            <strong>National Suicide Prevention Lifeline:</strong> 988<br>
+                            <strong>Crisis Text Line:</strong> Text HOME to 741741<br>
+                            <strong>Emergency:</strong> 911
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form validation
+        document.getElementById('assessmentForm').addEventListener('submit', function(e) {
+            const totalQuestions = 9;
+            let allAnswered = true;
+            
+            for(let i = 0; i < totalQuestions; i++) {
+                const radioButtons = document.querySelectorAll(`input[name="question_${i}"]`);
+                let questionAnswered = false;
+                
+                for(let radio of radioButtons) {
+                    if(radio.checked) {
+                        questionAnswered = true;
+                        break;
+                    }
+                }
+                
+                if(!questionAnswered) {
+                    allAnswered = false;
+                    break;
+                }
+            }
+            
+            if(!allAnswered) {
+                e.preventDefault();
+                alert('Please answer all questions to get an accurate assessment.');
+            } 
+        })  
+    ;
+    </script>
+</body>
+</html>
