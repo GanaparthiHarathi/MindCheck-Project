@@ -119,7 +119,7 @@
                             <div class="card-body p-4">
                                 <h3 class="card-title mb-4">Send us a Message</h3>
                                 
-                                <form method="POST">
+                                <form action="{{ url_for('submit_contact') }}" method="POST">
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label for="name" class="form-label">Full Name</label>

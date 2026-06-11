@@ -111,11 +111,9 @@ def submit_contact():
     name = request.form.get('name')
     email = request.form.get('email')
     message = request.form.get('message')
-    
-    # In a real app, you would save this to a database or send an email
-    # For now, we'll just flash a success message
+
     flash(f'Thank you {name}! Your message has been received. We will get back to you at {email}.', 'success')
-    
+
     return redirect(url_for('contact'))
 
 @app.route('/resources')
