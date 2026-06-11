@@ -6,15 +6,15 @@ app.secret_key = 'your-secret-key-change-this'
 
 # Depression screening questions (simplified version based on PHQ-9 concepts)
 SCREENING_QUESTIONS = [
-    "Over the last 2 weeks, how often have you been bothered by little interest or pleasure in doing things?",
-    "Over the last 2 weeks, how often have you been bothered by feeling down, depressed, or hopeless?",
-    "Over the last 2 weeks, how often have you been bothered by trouble falling or staying asleep, or sleeping too much?",
-    "Over the last 2 weeks, how often have you been bothered by feeling tired or having little energy?",
-    "Over the last 2 weeks, how often have you been bothered by poor appetite or overeating?",
-    "Over the last 2 weeks, how often have you been bothered by feeling bad about yourself or that you are a failure?",
-    "Over the last 2 weeks, how often have you been bothered by trouble concentrating on things?",
-    "Over the last 2 weeks, how often have you been bothered by moving or speaking so slowly that others could notice?",
-    "Over the last 2 weeks, how often have you been bothered by thoughts that you would be better off dead?"
+    "little interest or pleasure in doing things?",
+    "feeling down, depressed, or hopeless?",
+    "trouble falling or staying asleep, or sleeping too much?",
+    "feeling tired or having little energy?",
+    "poor appetite or overeating?",
+    "feeling bad about yourself or that you are a failure?",
+    "trouble concentrating on things?",
+    "moving or speaking so slowly that others could notice?",
+    "thoughts that you would be better off dead?"
 ]
 
 ANSWER_OPTIONS = [
