@@ -6,15 +6,15 @@ app.secret_key = 'your-secret-key-change-this'
 
 # Depression screening questions (simplified version based on PHQ-9 concepts)
 SCREENING_QUESTIONS = [
-    "little interest or pleasure in doing things?",
-    "feeling down, depressed, or hopeless?",
-    "trouble falling or staying asleep, or sleeping too much?",
-    "feeling tired or having little energy?",
-    "poor appetite or overeating?",
-    "feeling bad about yourself or that you are a failure?",
-    "trouble concentrating on things?",
-    "moving or speaking so slowly that others could notice?",
-    "thoughts that you would be better off dead?"
+    " lose interest in activities that you normally enjoy?",
+    " feel sad, down, or hopeless?",
+    " have difficulty falling asleep, staying asleep, or sleep more than usual?",
+    " feel tired or have very little energy?",
+    " eat much less or much more than usual?",
+    " feel like you were a failure or let yourself or your loved ones down?",
+    " find it difficult to concentrate on tasks such as studying, reading, or watching television?",
+    " move or speak unusually slowly, or feel so restless that it was hard to sit still?",
+    " have thoughts that you would be better off dead or of hurting yourself in some way?"
 ]
 
 ANSWER_OPTIONS = [
