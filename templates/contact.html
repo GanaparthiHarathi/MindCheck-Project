@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - MindCheck</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: none;
+            border-radius: 15px;
+        }
+        .navbar {
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .hero-section {
+            padding: 2rem 0;
+            text-align: center;
+            color: white;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .contact-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 2rem;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">MindCheck</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Assessment</a></li>
+                <li class="nav-item"><a class="nav-link" href="/resources">Resources</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/contact">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero-section">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p>We’re here to guide you to the right support resources</p>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="row">
+
+                <!-- CONTACT FORM -->
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body p-4">
+
+                            <h3 class="card-title mb-4">Send us a Message</h3>
+
+                            <form action="{{ url_for('submit_contact') }}" method="POST">
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" name="name" required>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" name="email" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Subject</label>
+                                    <select class="form-select" name="subject" required>
+                                        <option value="">Select a subject</option>
+                                        <option value="general">General Inquiry</option>
+                                        <option value="support">Technical Support</option>
+                                        <option value="feedback">Feedback</option>
+                                        <option value="resources">Need Resources</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Message</label>
+                                    <textarea class="form-control" name="message" rows="5" required></textarea>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" required>
+                                    <label class="form-check-label">
+                                        This form is for general inquiries only, not emergency support.
+                                    </label>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Send Message</button>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE: OFFICIAL SUPPORT -->
+                <div class="col-lg-4">
+                    <div class="contact-info">
+
+                        <h4 class="mb-3">Official Mental Health Support (India)</h4>
+
+                        <p><strong>Tele-MANAS (Government of India)</strong></p>
+                        <p>📞 14416</p>
+                        <p>📞 1-800-891-4416</p>
+                        <p>🌐 https://telemanas.mohfw.gov.in</p>
+
+                        <hr>
+
+                        <p><strong>KIRAN Helpline</strong></p>
+                        <p>📞 1800-599-0019</p>
+
+                        <hr>
+
+                        <p><strong>Emergency</strong></p>
+                        <p>📞 112</p>
+
+                        <hr>
+
+                        <small class="text-muted">
+                            These services are provided by Government of India and trained professionals.
+                            This project only directs users to official support systems.
+                        </small>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
