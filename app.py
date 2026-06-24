@@ -113,7 +113,7 @@ def submit_contact():
     email = request.form.get('email')
     message = request.form.get('message')
 
-    flash(f"Thank you {name}. Your inquiry has been recorded.")
+    flash(f"Thank you {name}. Your inquiry has been recorded.", "success")
 
     return redirect(url_for('contact'))
 
